@@ -46,14 +46,14 @@ def training_configurator(args, world):
     if args.dataset.lower() == "coco":
         
         cfg.data_root = os.environ["SM_CHANNEL_TRAINING"] # By default, data will be download to /opt/ml/input/data/training
-        cfg.data.train.ann_file = os.path.join(cfg.data_root, "annotations/instances_train2017.json")
-        cfg.data.train.img_prefix = os.path.join(cfg.data_root, "train2017")
-        cfg.data.val.ann_file = os.path.join(cfg.data_root, "annotations/instances_val2017.json")
-        cfg.data.val.img_prefix = os.path.join(cfg.data_root, "val2017")
+        cfg.data.train.ann_file = os.path.join(cfg.data_root, "train/_annotations.coco.json")
+        cfg.data.train.img_prefix = os.path.join(cfg.data_root, "train")
+        cfg.data.val.ann_file = os.path.join(cfg.data_root, "valid/_annotations.coco.json")
+        cfg.data.val.img_prefix = os.path.join(cfg.data_root, "valid")
         
         # Note, that we are using validation dataset for testing purposes
-        cfg.data.test.ann_file = os.path.join(cfg.data_root, "annotations/instances_val2017.json")
-        cfg.data.test.img_prefix = os.path.join(cfg.data_root, "val2017")
+        cfg.data.test.ann_file = os.path.join(cfg.data_root, "valid/_annotations.coco.json")
+        cfg.data.test.img_prefix = os.path.join(cfg.data_root, "valid")
         
         # Overriding config with options
         if args.options is not None:
