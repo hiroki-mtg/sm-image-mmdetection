@@ -35,4 +35,4 @@ ENV MMDETECTION /opt/ml/code/mmdetection
 # Sagemaker Config
 COPY /mmdetection /opt/ml/code
 ENV SAGEMAKER_SUBMIT_DIRECTORY /opt/ml/code
-ENV SAGEMAKER_PROGRAM main.py
+ENV SAGEMAKER_PROGRAM mmdetection_train.py
