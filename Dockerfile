@@ -17,17 +17,22 @@
 ARG REGION=us-west-2
 
 # SageMaker PyTorch image
-FROM 520713654638.dkr.ecr.$REGION.amazonaws.com/sagemaker-pytorch:0.4.0-cpu-py3
+FROM 763104351884.dkr.ecr.$REGION.amazonaws.com/pytorch-training:1.13.1-gpu-py39-cu117-ubuntu20.04-sagemaker-v1.0 
 
 ENV PATH="/opt/ml/code:${PATH}"
 
-# /opt/ml and all subdirectories are utilized by SageMaker, we use the /code subdirectory to store our user code.
-COPY /cifar10 /opt/ml/code
+# Install MMDetection
+WORKDIR /opt/ml/code
+RUN pip install mmcv-full==1.7.0 -f https://download.openmmlab.com/mmcv/dist/cu117/torch1.13/index.html
+RUN git clone https://github.com/hiroki-mtg/mmdetection
+RUN cd mmdetection/ && \
+    pip install -e .
 
-# this environment variable is used by the SageMaker PyTorch container to determine our user code directory.
+# Address https://github.com/pytorch/pytorch/issues/37377
+ENV MKL_THREADING_LAYER GNU
+ENV MMDETECTION /opt/ml/code/mmdetection
+
+# Sagemaker Config
+COPY /mmdetection /opt/ml/code
 ENV SAGEMAKER_SUBMIT_DIRECTORY /opt/ml/code
-
-# this environment variable is used by the SageMaker PyTorch container to determine our program entry point
-# for training and serving.
-# For more information: https://github.com/aws/sagemaker-pytorch-container
-ENV SAGEMAKER_PROGRAM cifar10.py
+ENV SAGEMAKER_PROGRAM main.py
